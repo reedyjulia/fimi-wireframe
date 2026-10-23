@@ -1,0 +1,1195 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}</style></head><body>
+<meta charset="UTF-8">
+<title>FIMI Site — Interactive Wireframe</title>
+<style>
+  :root {
+    --paper: #eceeec;
+    --canvas: #ffffff;
+    --ink: #1c1e1c;
+    --ink-soft: #55584f;
+    --block-fill: #e8e8e4;
+    --block-fill-2: #ddded9;
+    --block-border: #b7b8b0;
+    --hatch: #c9cac3;
+    --chrome: #dcddd8;
+    --rail-border: #d7d8d2;
+    --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --font-body: "Proxima Nova", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    --font-subtitle: "Proxima Nova Bold", "Proxima Nova", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    --font-title: "Proxima Nova Black", "Proxima Nova", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  }
+  :root[data-theme="dark"] {
+    --paper: #16181a;
+    --canvas: #1e2023;
+    --ink: #eceeea;
+    --ink-soft: #a7aaa2;
+    --block-fill: #2a2d2f;
+    --block-fill-2: #34373a;
+    --block-border: #4a4d49;
+    --hatch: #3c3f3c;
+    --chrome: #26292b;
+    --rail-border: #34373a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #16181a;
+      --canvas: #1e2023;
+      --ink: #eceeea;
+      --ink-soft: #a7aaa2;
+      --block-fill: #2a2d2f;
+      --block-fill-2: #34373a;
+      --block-border: #4a4d49;
+      --hatch: #3c3f3c;
+      --chrome: #26292b;
+      --rail-border: #34373a;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-body);
+    margin: 0;
+    padding: 40px 20px 80px;
+  }
+
+  .wrap { max-width: 1240px; margin: 0 auto; }
+
+  /* ---- page header ---- */
+  .doc-head { margin-bottom: 22px; }
+  .doc-head h1 {
+    font-family: var(--font-title);
+    font-weight: 900;
+    font-size: 22px;
+    margin: 0 0 6px;
+    letter-spacing: -0.01em;
+  }
+  .doc-head p {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 13.5px;
+    max-width: 66ch;
+    line-height: 1.5;
+  }
+  .doc-head .src {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-soft);
+  }
+
+  /* ---- legend ---- */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-soft);
+    border-top: 1px solid var(--rail-border);
+    border-bottom: 1px solid var(--rail-border);
+    padding: 10px 2px;
+    margin-bottom: 28px;
+  }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .swatch { width: 12px; height: 12px; border-radius: 2px; flex: none; }
+  .sw-block { background: var(--block-fill); border: 1px solid var(--block-border); }
+  .sw-hatch { background-image: repeating-linear-gradient(45deg, var(--hatch), var(--hatch) 2px, transparent 2px, transparent 6px); border: 1px solid var(--block-border); }
+
+  /* ---- browser frame ---- */
+  .frame {
+    background: var(--canvas);
+    border: 1px solid var(--rail-border);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  }
+  .chrome {
+    background: var(--chrome);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid var(--rail-border);
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--block-border); }
+  .url {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-soft);
+    background: var(--canvas);
+    border: 1px solid var(--rail-border);
+    border-radius: 5px;
+    padding: 3px 10px;
+    flex: 1;
+    max-width: 320px;
+  }
+
+  /* ---- section ---- */
+  .section { border-bottom: 1px solid var(--rail-border); }
+  .page .section:last-of-type { border-bottom: none; }
+
+  .content {
+    padding: 40px 44px;
+    min-width: 0;
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+    margin: 0 0 10px;
+  }
+  h2.sec-title {
+    font-family: var(--font-title);
+    font-weight: 900;
+    font-size: 26px;
+    line-height: 1.2;
+    margin: 0 0 14px;
+    text-wrap: balance;
+    letter-spacing: -0.01em;
+  }
+  .sec-sub {
+    font-size: 15px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+    margin: 0 0 20px;
+    max-width: 62ch;
+  }
+
+  .block { background: var(--block-fill); border: 1px solid var(--block-border); border-radius: 6px; }
+  .hatch {
+    background-color: var(--block-fill);
+    background-image: repeating-linear-gradient(45deg, var(--hatch), var(--hatch) 2px, transparent 2px, transparent 9px);
+    border: 1px solid var(--block-border);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink-soft);
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .stub-block {
+    min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink-soft);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 9px 16px;
+    border-radius: 5px;
+    border: 1px solid var(--ink);
+    color: var(--ink);
+    background: transparent;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .btn-ghost { border-style: dashed; color: var(--ink-soft); border-color: var(--block-border); }
+  .link {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--block-border);
+    padding-bottom: 1px;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .page-links { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; align-items: flex-start; }
+
+  /* ---- nav ---- */
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 44px;
+    border-bottom: 1px solid var(--rail-border);
+  }
+  .logo-block { width: 96px; height: 26px; }
+  .nav-links { display: flex; gap: 22px; align-items: center; }
+  .nav-item { display: flex; align-items: center; gap: 3px; }
+  .nav-label {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+  }
+  .nav-label:hover { color: var(--ink); }
+  .nav-label.active { color: var(--ink); }
+  .caret-btn {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    opacity: 0.6;
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    padding: 4px 2px;
+  }
+  .caret-btn:hover { opacity: 1; }
+
+  /* ---- mega menu / dropdown ---- */
+  .dropdown { padding: 24px 44px; background: var(--block-fill-2); }
+  .mega-cols { display: flex; gap: 40px; }
+  .mega-col { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 9px; font-size: 13px; color: var(--ink); }
+  .mega-col a { color: inherit; text-decoration: none; border-bottom: 1px solid transparent; padding-bottom: 1px; }
+  .mega-col a:hover { border-bottom-color: var(--block-border); }
+  .mega-placeholder {
+    height: 74px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink-soft);
+  }
+
+  /* ---- hero ---- */
+  .hero .content { padding-bottom: 32px; }
+  .hero h1 {
+    font-family: var(--font-title);
+    font-weight: 900;
+    font-size: 38px;
+    line-height: 1.12;
+    letter-spacing: -0.015em;
+    margin: 0 0 16px;
+    text-wrap: balance;
+    max-width: 16ch;
+  }
+  .hero-sub {
+    font-family: var(--font-subtitle);
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--ink-soft);
+    margin: 0 0 26px;
+  }
+  .hero-cta-row { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; margin-bottom: 28px; }
+  .quicklinks { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; font-family: var(--font-mono); font-size: 12px; color: var(--ink-soft); }
+  .quicklinks .sep { opacity: 0.5; padding: 0 2px; }
+  .hero-media { height: 300px; margin-top: 6px; }
+
+  /* ---- stat grid ---- */
+  .stat-context { display: flex; gap: 28px; margin: 4px 0 28px; flex-wrap: wrap; }
+  .stat-context .pill {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    background: var(--block-fill-2);
+    border: 1px solid var(--block-border);
+    border-radius: 20px;
+    padding: 6px 14px;
+    max-width: 34ch;
+  }
+  .stat-context .pill b { color: var(--ink); font-family: var(--font-subtitle); font-weight: 700; }
+  .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-bottom: 24px; }
+  @media (max-width: 640px) { .stat-grid { grid-template-columns: 1fr; } }
+  .stat-card {
+    background: var(--block-fill);
+    border: 1px solid var(--block-border);
+    border-radius: 8px;
+    padding: 20px;
+  }
+  .stat-num { font-size: 30px; font-weight: 600; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; margin-bottom: 6px; }
+  .stat-label { font-size: 13px; color: var(--ink-soft); line-height: 1.4; }
+
+  /* ---- who we are ---- */
+  .credibility-grid { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 20px; }
+  @media (max-width: 760px) { .credibility-grid { grid-template-columns: 1fr; } }
+  .cred-card { display: flex; flex-direction: column; gap: 14px; }
+  .cred-photo { height: 140px; }
+  .cred-card h3 { font-family: var(--font-subtitle); font-weight: 700; font-size: 16px; margin: 0; }
+  .cred-card p { font-size: 13.5px; color: var(--ink-soft); line-height: 1.55; margin: 0; }
+  .quote-block { padding: 12px 14px; font-size: 12.5px; font-style: italic; color: var(--ink-soft); }
+
+  /* ---- focus areas ---- */
+  .focus-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  @media (max-width: 760px) { .focus-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 500px) { .focus-grid { grid-template-columns: 1fr; } }
+  .focus-card { padding: 20px 18px; display: flex; flex-direction: column; gap: 8px; min-height: 110px; }
+  .focus-card .tag { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-soft); }
+  .focus-card p { font-size: 13.5px; margin: 0; line-height: 1.4; }
+
+  /* ---- tabs ---- */
+  .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--rail-border); margin-bottom: 24px; flex-wrap: wrap; }
+  .tab-btn {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 10px 14px;
+    margin-bottom: -1px;
+    cursor: pointer;
+  }
+  .tab-btn:hover { color: var(--ink); }
+  .tab-btn.active { color: var(--ink); border-bottom-color: var(--ink); }
+
+  /* ---- stories ---- */
+  .story-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  @media (max-width: 760px) { .story-grid { grid-template-columns: 1fr; } }
+  .story-card { display: flex; flex-direction: column; gap: 12px; }
+  .story-photo { height: 150px; }
+  .story-card p { font-size: 14px; margin: 0; line-height: 1.4; }
+  .story-links { display: flex; flex-direction: column; gap: 5px; }
+
+  /* ---- statement band ---- */
+  .statement .content { text-align: center; padding: 56px 44px; }
+  .statement h2 { font-family: var(--font-title); font-weight: 900; font-size: 22px; font-style: italic; color: var(--ink-soft); margin: 0; }
+
+  /* ---- audience ---- */
+  .audience-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-bottom: 28px; }
+  @media (max-width: 760px) { .audience-grid { grid-template-columns: 1fr; } }
+  .aud-card { padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+  .aud-card h3 { font-family: var(--font-subtitle); font-weight: 700; font-size: 15.5px; margin: 0; }
+  .aud-card p { font-size: 13px; color: var(--ink-soft); margin: 0; line-height: 1.4; }
+  .aud-card ul { margin: 4px 0 0; padding-left: 16px; font-size: 12.5px; color: var(--ink-soft); line-height: 1.7; }
+  .cta-trio { border-top: 1px solid var(--rail-border); padding-top: 22px; }
+  .cta-trio-links { display: flex; gap: 28px; flex-wrap: wrap; margin-top: 12px; }
+  .cta-trio-links .link { display: block; }
+  .cta-trio-links .qual { display: block; font-size: 10.5px; color: var(--ink-soft); opacity: 0.7; font-style: italic; margin-top: 2px; }
+
+  /* ---- final cta ---- */
+  .final-cta .content { text-align: center; padding: 52px 44px; }
+  .final-cta h2 { font-family: var(--font-title); font-weight: 900; font-size: 24px; margin: 0 0 10px; }
+  .final-cta p { font-size: 14.5px; color: var(--ink-soft); max-width: 48ch; margin: 0 auto 22px; }
+  .final-cta .hero-cta-row { justify-content: center; }
+
+  /* ---- site footer ---- */
+  .footer .content { padding: 28px 44px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+  .footer-links { display: flex; gap: 22px; }
+  .footer-links span { font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-soft); }
+</style>
+
+<div class="wrap">
+  <div class="doc-head">
+    <h1>FIMI Site — Interactive Wireframe</h1>
+    <p>Click through the nav to move between pages. Home is fully drafted; the rest are stubs, ready to build out the same way. Content pulled from <span class="src">Draft homepage for FIMI-jrs.pptx</span>.</p>
+  </div>
+
+  <div class="legend">
+    <span><span class="swatch sw-block"></span> layout / content block</span>
+    <span><span class="swatch sw-hatch"></span> photo or video placeholder</span>
+    <span>[X] = number still needs sourcing</span>
+  </div>
+
+  <div class="frame">
+    <div class="chrome">
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      <div class="url">tuftsfoodismedicine.org</div>
+    </div>
+
+    <!-- NAV -->
+    <div class="section">
+      <div class="nav-wrap">
+        <div class="nav">
+          <div class="block logo-block" data-target="home" style="cursor:pointer;"></div>
+          <div class="nav-links">
+            <div class="nav-item">
+              <span class="nav-label" data-target="about">About</span>
+              <button class="caret-btn" data-toggle="about-menu" aria-label="Toggle About menu">▾</button>
+            </div>
+            <div class="nav-item">
+              <span class="nav-label" data-target="our-work">Our Work</span>
+              <button class="caret-btn" data-toggle="our-work-menu" aria-label="Toggle Our Work menu">▾</button>
+            </div>
+            <div class="nav-item">
+              <span class="nav-label" data-target="impact">Impact</span>
+              <button class="caret-btn" data-toggle="impact-menu" aria-label="Toggle Impact menu">▾</button>
+            </div>
+            <span class="nav-label" data-target="news-events">News &amp; Events</span>
+            <span class="btn nav-label" data-target="contact" style="padding:7px 14px;">Contact</span>
+          </div>
+        </div>
+
+        <div id="about-menu" class="dropdown" hidden>
+          <div class="mega-cols">
+            <ul class="mega-col">
+              <li><a href="#what-is-fim" data-target="what-is-fim">What is FIM</a></li>
+              <li><a href="#institute" data-target="institute">The Institute</a></li>
+              <li><a href="#team" data-target="team">Team</a></li>
+            </ul>
+            <ul class="mega-col">
+              <li><a href="#councils" data-target="councils">Advisory &amp; Community Councils</a></li>
+              <li><a href="#funders" data-target="funders">Funders &amp; Collaborators</a></li>
+            </ul>
+          </div>
+        </div>
+        <div id="our-work-menu" class="dropdown" hidden>
+          <div class="mega-cols">
+            <ul class="mega-col">
+              <li><a href="#evidence" data-target="evidence">Evidence</a></li>
+              <li><a href="#advocacy" data-target="advocacy">Advocacy</a></li>
+              <li><a href="#business-case" data-target="business-case">Business Case</a></li>
+              <li><a href="#practice" data-target="practice">Practice</a></li>
+              <li><a href="#innovation" data-target="innovation">Innovation</a></li>
+              <li><a href="#convening" data-target="convening">Convening</a></li>
+            </ul>
+            <ul class="mega-col">
+              <li><a href="#resource-navigator" data-target="resource-navigator">Resource Navigator</a></li>
+            </ul>
+          </div>
+        </div>
+        <div id="impact-menu" class="dropdown" hidden>
+          <div class="mega-cols">
+            <ul class="mega-col">
+              <li><a href="#care" data-target="care">Care</a></li>
+              <li><a href="#policy" data-target="policy">Policy</a></li>
+              <li><a href="#stories" data-target="stories">Stories</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="pages">
+
+      <!-- ===================== HOME ===================== -->
+      <div class="page" data-page="home">
+
+        <!-- HERO -->
+        <div class="section hero">
+          <div class="content">
+            <p class="eyebrow">Food is Medicine Institute</p>
+            <h1>The leading academic institute advancing Food is Medicine</h1>
+            <p class="hero-sub">Building the Evidence. Shaping the Policy. Scaling the Impact.</p>
+            <div class="hero-cta-row">
+              <span class="btn" data-target="our-work">Explore Our Work →</span>
+              <div class="quicklinks">
+                <span>History</span><span class="sep">·</span><span>Research</span><span class="sep">·</span><span>Team</span><span class="sep">·</span><span>Events</span><span class="sep">·</span><span>Publications</span>
+              </div>
+            </div>
+            <div class="hatch hero-media">photo / video</div>
+          </div>
+        </div>
+
+        <!-- EVIDENCE / STATS -->
+        <div class="section">
+          <div class="content">
+            <p class="eyebrow">The evidence</p>
+            <h2 class="sec-title">Diet-related disease is fueling a health and economic crisis</h2>
+            <div class="stat-context">
+              <div class="pill"><b>85%</b> of all health care spending is related to managing diet-related chronic conditions</div>
+              <div class="pill">Suboptimal diets and food insecurity cost the U.S. economy <b>$1.1 trillion</b> annually in health care spending and lost productivity</div>
+            </div>
+            <p class="sec-sub" style="margin-bottom:4px;">Our evidence shows:</p>
+            <p class="sec-sub" style="font-size:13px;">Nutrition interventions reduce hospitalizations, improve outcomes, and lower costs.</p>
+            <div class="stat-grid">
+              <div class="stat-card">
+                <div class="stat-num">$13.6B</div>
+                <div class="stat-label">could be saved annually if all eligible patients received medically tailored meals</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-num">49%</div>
+                <div class="stat-label">of hospitalizations could be averted for adults receiving 10 medically tailored meals/week over 9 months</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-num">292,000</div>
+                <div class="stat-label">cardiovascular events could be prevented through produce prescriptions</div>
+              </div>
+            </div>
+            <span class="link">See full evidence summary →</span>
+          </div>
+        </div>
+
+        <!-- WHO WE ARE -->
+        <div class="section">
+          <div class="content">
+            <p class="eyebrow">Who we are</p>
+            <div class="credibility-grid">
+              <div class="cred-card">
+                <div class="hatch cred-photo">photo — Dr. Mozaffarian</div>
+                <h3>Directed by Dr. Dariush Mozaffarian</h3>
+                <p>A globally recognized cardiologist and nutrition scientist who has authored over 600 scientific studies, leading the Institute with a clear mission: to make food a standard part of healthcare, backed by science and driven by impact.</p>
+                <div class="block quote-block">[ insert short quote ]</div>
+                <span class="link">Letter from the Director →</span>
+              </div>
+              <div class="cred-card">
+                <div class="block cred-photo"></div>
+                <h3>Funded by trailblazers</h3>
+                <p>Backed by leading organizations committed to transforming healthcare through nutrition.</p>
+                <span class="link">View all funders →</span>
+              </div>
+              <div class="cred-card">
+                <div class="block cred-photo"></div>
+                <h3>A team of 30+ specialized experts</h3>
+                <p>Powered by physicians, dietitians, researchers, analysts, and policy strategists across Tufts and beyond.</p>
+                <span class="link">Meet our team →</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FOCUS AREAS -->
+        <div class="section">
+          <div class="content">
+            <p class="eyebrow">Explore our focus areas</p>
+            <div class="focus-grid">
+              <div class="block focus-card"><span class="tag">Evidence</span><p>Clinical trials and program development</p></div>
+              <div class="block focus-card"><span class="tag">Advocacy</span><p>research translation and education for policymakers</p></div>
+              <div class="block focus-card"><span class="tag">Business Case</span><p>The economic case for food is medicine programs</p></div>
+              <div class="block focus-card"><span class="tag">Practice</span><p>Preparing clinicians for food is medicine in practice</p></div>
+              <div class="block focus-card"><span class="tag">Innovation</span><p>Public research tools and databases</p></div>
+              <div class="block focus-card"><span class="tag">Convening</span><p>Cross-sector convening and leadership</p></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- IMPACT STORIES -->
+        <div class="section">
+          <div class="content">
+            <p class="eyebrow">The true impact of food is medicine</p>
+            <div class="story-grid">
+              <div class="story-card">
+                <div class="hatch story-photo">Sam's photo</div>
+                <p>Medically tailored meals after a lengthy hospital stay</p>
+                <div class="story-links"><span class="link">Sam's story →</span><span class="link">Learn more about medically tailored meals →</span></div>
+              </div>
+              <div class="story-card">
+                <div class="hatch story-photo">Andrew's photo</div>
+                <p>Produce prescriptions in comprehensive diabetes care</p>
+                <div class="story-links"><span class="link">Andrew's story →</span><span class="link">Learn more about produce prescriptions →</span></div>
+              </div>
+              <div class="story-card">
+                <div class="hatch story-photo">Nicole's photo</div>
+                <p>Medically tailored groceries to control hypertension</p>
+                <div class="story-links"><span class="link">Nicole's story →</span><span class="link">Learn more about medically tailored groceries →</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STATEMENT -->
+        <div class="section statement">
+          <div class="content">
+            <h2>"Science first, always."</h2>
+          </div>
+        </div>
+
+        <!-- AUDIENCE PATHWAYS -->
+        <div class="section">
+          <div class="content">
+            <p class="eyebrow">Connecting stakeholders with resources they need</p>
+            <div class="audience-grid">
+              <div class="block aud-card">
+                <h3>Policy &amp; government leaders</h3>
+                <p>Developing tools and evidence to shape federal and state policy.</p>
+                <ul><li>Key policy solutions</li><li>1115 waiver tools</li><li>And more</li></ul>
+              </div>
+              <div class="block aud-card">
+                <h3>Clinicians &amp; healthcare providers</h3>
+                <p>Supporting clinical teams to prescribe nutrition-based care.</p>
+                <ul><li>Clinical toolkits</li><li>Referral models</li><li>Continuing education</li><li>And more</li></ul>
+              </div>
+              <div class="block aud-card">
+                <h3>Health plans &amp; systems</h3>
+                <p>Helping payers implement proven programs to improve outcomes and cut costs.</p>
+                <ul><li>Case studies</li><li>Cost-effectiveness data</li><li>Implementation models</li><li>And more</li></ul>
+              </div>
+            </div>
+            <div class="cta-trio">
+              <p class="sec-sub" style="margin-bottom:0;">Learn more about Food is Medicine</p>
+              <div class="cta-trio-links">
+                <span class="link">Explore the research →<span class="qual">our projects</span></span>
+                <span class="link">Join the conversation →<span class="qual">events? FNAC? news? LinkedIn?</span></span>
+                <span class="link">Understand the movement →<span class="qual">about FIM</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FINAL CTA -->
+        <div class="section final-cta">
+          <div class="content">
+            <h2>Ready to collaborate?</h2>
+            <p>We rely on cross-sector partnerships to conduct research and programs with real-world promise.</p>
+            <div class="hero-cta-row">
+              <span class="btn" data-target="contact">Contact our team →</span>
+              <span class="btn btn-ghost">Follow us on LinkedIn →</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ===================== ABOUT ===================== -->
+      <div class="page" data-page="about" hidden>
+        <div class="section">
+          <div class="content">
+            <p class="eyebrow">About</p>
+            <h2 class="sec-title">About the Institute</h2>
+            <p class="sec-sub">The About mega menu points to five standalone pages, listed below.</p>
+            <div class="page-links">
+              <a href="#what-is-fim" data-target="what-is-fim" class="link">What is FIM →</a>
+              <a href="#institute" data-target="institute" class="link">The Institute →</a>
+              <a href="#team" data-target="team" class="link">Team →</a>
+              <a href="#councils" data-target="councils" class="link">Advisory &amp; Community Councils →</a>
+              <a href="#funders" data-target="funders" class="link">Funders &amp; Collaborators →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== ABOUT: WHAT IS FIM ===================== -->
+      <div class="page" data-page="what-is-fim" hidden>
+        <div class="section">
+          <div class="content">
+            <p class="eyebrow">About / What is FIM</p>
+            <h2 class="sec-title">What is FIM</h2>
+            <div class="block stub-block">content TBD — let's design this page next</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== ABOUT: THE INSTITUTE ===================== -->
+      <div class="page" data-page="institute" hidden>
+        <div class="section">
+          <div class="content">
+            <p class="eyebrow">About / The Institute</p>
+            <h2 class="sec-title">The Institute</h2>
+            <div class="block stub-block">content TBD — let's design this page next</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== ABOUT: TEAM ===================== -->
+      <div class="page" data-page="team" hidden>
+        <div class="section">
+          <div class="content">
+            <p class="eyebrow">About / Team</p>
+            <h2 class="sec-title">Team</h2>
+            <div class="block stub-block">content TBD — let's design this page next</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== ABOUT: ADVISORY & COMMUNITY COUNCILS ===================== -->
+      <div class="page" data-page="councils" hidden>
+        <div class="section">
+          <div class="content">
+            <p class="eyebrow">About / Advisory &amp; Community Councils</p>
+            <h2 class="sec-title">Advisory &amp; Community Councils</h2>
+            <div class="block stub-block">content TBD — let's design this page next</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== ABOUT: FUNDERS & COLLABORATORS ===================== -->
+      <div class="page" data-page="funders" hidden>
+        <div class="section">
+          <div class="content">
+            <p class="eyebrow">About / Funders &amp; Collaborators</p>
+            <h2 class="sec-title">Funders &amp; Collaborators</h2>
+            <div class="block stub-block">content TBD — let's design this page next</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== OUR WORK ===================== -->
+      <div class="page" data-page="our-work" hidden>
+        <div class="section">
+          <div class="content">
+            <p class="eyebrow">Our Work</p>
+            <h2 class="sec-title">Our Work</h2>
+            <p class="sec-sub">The Our Work mega menu points to seven standalone pages, listed below.</p>
+            <div class="page-links">
+              <a href="#evidence" data-target="evidence" class="link">Evidence →</a>
+              <a href="#advocacy" data-target="advocacy" class="link">Advocacy →</a>
+              <a href="#business-case" data-target="business-case" class="link">Business Case →</a>
+              <a href="#practice" data-target="practice" class="link">Practice →</a>
+              <a href="#innovation" data-target="innovation" class="link">Innovation →</a>
+              <a href="#convening" data-target="convening" class="link">Convening →</a>
+              <a href="#resource-navigator" data-target="resource-navigator" class="link">Resource Navigator →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== OUR WORK: EVIDENCE ===================== -->
+      <div class="page" data-page="evidence" hidden>
+        <div class="section">
+          <div class="content">
+            <p class="eyebrow">Our Work / Evidence</p>
+            <h2 class="sec-title">Evidence</h2>
+            <div class="block stub-block">content TBD — let's design this page next</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== OUR WORK: ADVOCACY ===================== -->
+      <div class="page" data-page="advocacy" hidden>
+
+        <!-- HERO -->
+        <div class="section hero">
+          <div class="content">
+            <p class="eyebrow">Our Work / Advocacy</p>
+            <h1>Preparing Congress to champion Food is Medicine</h1>
+            <p class="hero-sub">A dedicated advocacy team that helps congressional offices turn Food is Medicine research into policy action.</p>
+            <div class="hero-cta-row">
+              <span class="btn" data-target="contact">Talk to our policy team →</span>
+              <div class="quicklinks">
+                <span>Briefings</span><span class="sep">·</span><span>Testimony</span><span class="sep">·</span><span>Bill language</span><span class="sep">·</span><span>Public comments</span><span class="sep">·</span><span>Advocacy Day</span>
+              </div>
+            </div>
+            <div class="hatch hero-media">photo / video — advocacy team on Capitol Hill</div>
+          </div>
+        </div>
+
+        <!-- TRACK RECORD -->
+        <div class="section">
+          <div class="content">
+            <p class="eyebrow">Track record</p>
+            <h2 class="sec-title">A trusted resource for congressional offices</h2>
+            <p class="sec-sub">Since 2021, our policy team has worked directly with members of Congress and their staff through the Institute's Nutrition Policy Initiative — helping implement the Biden-Harris National Strategy on Hunger, Nutrition, and Health, which grew out of the 2022 White House Conference on Hunger, Nutrition, and Health.</p>
+            <div class="stat-grid">
+              <div class="stat-card">
+                <div class="stat-num">[X]+</div>
+                <div class="stat-label">congressional offices briefed</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-num">[X]</div>
+                <div class="stat-label">pieces of testimony delivered</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-num">[X]</div>
+                <div class="stat-label">legislative sessions supported</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LED BY -->
+        <div class="section">
+          <div class="content">
+            <p class="eyebrow">Led by</p>
+            <h2 class="sec-title">A policy team based in Washington and on campus</h2>
+            <div class="credibility-grid">
+              <div class="cred-card">
+                <div class="hatch cred-photo">photo — Dr. Dariush Mozaffarian</div>
+                <h3>Dr. Dariush Mozaffarian</h3>
+                <p>Principal Investigator; Director, Food is Medicine Institute</p>
+              </div>
+              <div class="cred-card">
+                <div class="hatch cred-photo">photo — Emily A. Callahan</div>
+                <h3>Emily A. Callahan</h3>
+                <p>Director of Policy Strategy</p>
+              </div>
+              <div class="cred-card">
+                <div class="hatch cred-photo">photo — Kirsten Deuman</div>
+                <h3>Kirsten Deuman</h3>
+                <p>Manager, Research Translation &amp; Content Development</p>
+              </div>
+            </div>
+            <a href="https://informingnutritionpolicy.org" target="_blank" rel="noopener" class="link" style="display:inline-block; margin-top:20px;">Visit the Nutrition Policy Initiative →</a>
+          </div>
+        </div>
+
+        <!-- WHAT WE HELP WITH -->
+        <div class="section">
+          <div class="content">
+            <p class="eyebrow">How we advance Food is Medicine policy</p>
+            <h2 class="sec-title">Preparing policymakers and regulators for every kind of engagement</h2>
+            <div class="focus-grid">
+              <div class="block focus-card"><span class="tag">Congressional Briefings</span><p>Staffing and content support for member and staff briefings on Food is Medicine research and policy.</p></div>
+              <div class="block focus-card"><span class="tag">Testimony</span><p>Drafting written statements and preparing spokespeople for congressional testimony.</p></div>
+              <div class="block focus-card"><span class="tag">Bill Language</span><p>Technical assistance translating Food is Medicine evidence into legislative text.</p></div>
+              <div class="block focus-card"><span class="tag">Remarks &amp; Statements</span><p>Talking points, floor statements, and other remarks grounded in the latest research.</p></div>
+              <div class="block focus-card"><span class="tag">Public Comments</span><p>Written comments submitted directly to federal agencies in response to proposed regulations and requests for information.</p></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ADVOCACY DAY -->
+        <div class="section">
+          <div class="content">
+            <p class="eyebrow">Annual event</p>
+            <h2 class="sec-title">Food is Medicine Advocacy Day</h2>
+            <p class="sec-sub">Each year, we bring advocates, clinicians, and patients to Capitol Hill to meet directly with congressional offices and make the case for Food is Medicine policy.</p>
+            <div class="hatch hero-media">photo / video — Advocacy Day on Capitol Hill</div>
+            <div class="stat-grid">
+              <div class="stat-card">
+                <div class="stat-num">[X]</div>
+                <div class="stat-label">advocates on the Hill each year</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-num">[X]</div>
+                <div class="stat-label">states represented</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-num">[X]</div>
+                <div class="stat-label">congressional meetings held</div>
+              </div>
+            </div>
+            <a href="#advocacy-day" data-target="advocacy-day" class="link" style="display:inline-block; margin-top:20px;">Explore Advocacy Day →</a>
+          </div>
+        </div>
+
+        <!-- RELATED -->
+        <div class="section">
+          <div class="content">
+            <p class="eyebrow">Related</p>
+            <h2 class="sec-title">Go deeper</h2>
+            <div class="page-links">
+              <a href="#news-events" data-target="news-events" class="link">See upcoming Advocacy Day dates and events →</a>
+              <a href="#policy" data-target="policy" class="link">See how this work shapes national policy →</a>
+              <a href="#resource-navigator" data-target="resource-navigator" class="link">Find advocacy tools and resources →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- FINAL CTA -->
+        <div class="section final-cta">
+          <div class="content">
+            <h2>Bring Food is Medicine to your office</h2>
+            <p>Congressional staff can request a briefing, testimony support, or one-on-one technical assistance from our advocacy team.</p>
+            <div class="hero-cta-row">
+              <span class="btn" data-target="contact">Contact our policy team →</span>
+              <span class="btn btn-ghost" data-target="team">Meet the team →</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ===================== OUR WORK / ADVOCACY: ADVOCACY DAY ===================== -->
+      <div class="page" data-page="advocacy-day" hidden>
+
+        <!-- HERO -->
+        <div class="section hero">
+          <div class="content">
+            <p class="eyebrow">Our Work / Advocacy / Advocacy Day</p>
+            <h1>Food is Medicine Advocacy Day</h1>
+            <p class="hero-sub">Our flagship annual event bringing advocates, clinicians, and patients to Capitol Hill to make the case for Food is Medicine policy.</p>
+            <div class="hero-cta-row">
+              <span class="btn" data-target="contact">Get involved next year →</span>
+            </div>
+            <div class="hatch hero-media">photo / video — Advocacy Day on Capitol Hill</div>
+          </div>
+        </div>
+
+        <!-- PAST ITERATIONS -->
+        <div class="section">
+          <div class="content">
+            <p class="eyebrow">Past iterations</p>
+            <h2 class="sec-title">Advocacy Day through the years</h2>
+            <div class="tabs">
+              <button class="tab-btn active" data-tab="ad-2026">2026</button>
+              <button class="tab-btn" data-tab="ad-2025">2025</button>
+              <button class="tab-btn" data-tab="ad-2024">2024</button>
+              <button class="tab-btn" data-tab="ad-2023">2023</button>
+            </div>
+            <div id="ad-2026" class="tab-panel">
+              <div class="stat-grid">
+                <div class="stat-card"><div class="stat-num">[X]</div><div class="stat-label">advocates on the Hill</div></div>
+                <div class="stat-card"><div class="stat-num">[X]</div><div class="stat-label">states represented</div></div>
+                <div class="stat-card"><div class="stat-num">[X]</div><div class="stat-label">congressional meetings held</div></div>
+              </div>
+              <div class="block stub-block" style="margin-top:20px;">content TBD — recap, photos, and coverage from 2026</div>
+            </div>
+            <div id="ad-2025" class="tab-panel" hidden>
+              <div class="block stub-block">content TBD — recap, photos, and coverage from 2025</div>
+            </div>
+            <div id="ad-2024" class="tab-panel" hidden>
+              <div class="block stub-block">content TBD — recap, photos, and coverage from 2024</div>
+            </div>
+            <div id="ad-2023" class="tab-panel" hidden>
+              <div class="block stub-block">content TBD — recap, photos, and coverage from 2023</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FINAL CTA -->
+        <div class="section final-cta">
+          <div class="content">
+            <h2>Join us on the Hill</h2>
+            <p>Advocacy Day is open to clinicians, researchers, patients, and partner organizations.</p>
+            <div class="hero-cta-row">
+              <span class="btn" data-target="contact">Contact our policy team →</span>
+              <span class="btn btn-ghost" data-target="advocacy">Back to Advocacy →</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ===================== OUR WORK: INNOVATION ===================== -->
+      <div class="page" data-page="innovation" hidden>
+        <div class="section">
+          <div class="content">
+            <p class="eyebrow">Our Work / Innovation</p>
+            <h2 class="sec-title">Innovation</h2>
+            <div class="block stub-block">content TBD — let's design this page next</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== OUR WORK: PRACTICE ===================== -->
+      <div class="page" data-page="practice" hidden>
+        <div class="section">
+          <div class="content">
+            <p class="eyebrow">Our Work / Practice</p>
+            <h2 class="sec-title">Practice</h2>
+            <div class="block stub-block">content TBD — let's design this page next</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== OUR WORK: BUSINESS CASE ===================== -->
+      <div class="page" data-page="business-case" hidden>
+        <div class="section">
+          <div class="content">
+            <p class="eyebrow">Our Work / Business Case</p>
+            <h2 class="sec-title">Business Case</h2>
+            <div class="block stub-block">content TBD — let's design this page next</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== OUR WORK: CONVENING ===================== -->
+      <div class="page" data-page="convening" hidden>
+        <div class="section">
+          <div class="content">
+            <p class="eyebrow">Our Work / Convening</p>
+            <h2 class="sec-title">Convening</h2>
+            <div class="block stub-block">content TBD — let's design this page next</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== OUR WORK: RESOURCE NAVIGATOR ===================== -->
+      <div class="page" data-page="resource-navigator" hidden>
+        <div class="section">
+          <div class="content">
+            <p class="eyebrow">Our Work / Resource Navigator</p>
+            <h2 class="sec-title">Resource Navigator</h2>
+            <div class="block stub-block">content TBD — let's design this page next</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== IMPACT ===================== -->
+      <div class="page" data-page="impact" hidden>
+        <div class="section">
+          <div class="content">
+            <p class="eyebrow">Impact</p>
+            <h2 class="sec-title">Impact</h2>
+            <p class="sec-sub">The Impact mega menu points to three standalone pages, listed below.</p>
+            <div class="page-links">
+              <a href="#care" data-target="care" class="link">Care →</a>
+              <a href="#policy" data-target="policy" class="link">Policy →</a>
+              <a href="#stories" data-target="stories" class="link">Stories →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== IMPACT: CARE ===================== -->
+      <div class="page" data-page="care" hidden>
+        <div class="section">
+          <div class="content">
+            <p class="eyebrow">Impact / Care</p>
+            <h2 class="sec-title">Care</h2>
+            <div class="block stub-block">content TBD — let's design this page next</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== IMPACT: POLICY ===================== -->
+      <div class="page" data-page="policy" hidden>
+        <div class="section">
+          <div class="content">
+            <p class="eyebrow">Impact / Policy</p>
+            <h2 class="sec-title">Policy</h2>
+            <div class="block stub-block">content TBD — let's design this page next</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== IMPACT: STORIES ===================== -->
+      <div class="page" data-page="stories" hidden>
+        <div class="section">
+          <div class="content">
+            <p class="eyebrow">Impact / Stories</p>
+            <h2 class="sec-title">Stories</h2>
+            <div class="block stub-block">content TBD — let's design this page next</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== NEWS & EVENTS ===================== -->
+      <div class="page" data-page="news-events" hidden>
+        <div class="section">
+          <div class="content">
+            <p class="eyebrow">News &amp; Events</p>
+            <h2 class="sec-title">News &amp; Events</h2>
+            <div class="block stub-block">content TBD — let's design this page next</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== CONTACT ===================== -->
+      <div class="page" data-page="contact" hidden>
+        <div class="section">
+          <div class="content">
+            <p class="eyebrow">Contact</p>
+            <h2 class="sec-title">Contact</h2>
+            <div class="block stub-block">content TBD — let's design this page next</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SITE FOOTER (persistent) -->
+    <div class="section footer">
+      <div class="content">
+        <div class="block logo-block" data-target="home" style="cursor:pointer;"></div>
+        <div class="footer-links">
+          <span>Careers</span>
+          <span class="nav-label" data-target="contact">Contact</span>
+          <span>Newsletter Signup</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  (function () {
+    var PATHS = {
+      home: '', about: '/about', 'our-work': '/our-work', impact: '/impact', 'news-events': '/news-events', contact: '/contact',
+      'what-is-fim': '/about/what-is-fim', institute: '/about/institute', team: '/about/team', councils: '/about/councils', funders: '/about/funders',
+      evidence: '/our-work/evidence', advocacy: '/our-work/advocacy', innovation: '/our-work/innovation', practice: '/our-work/practice', 'business-case': '/our-work/business-case', convening: '/our-work/convening', 'resource-navigator': '/our-work/resource-navigator',
+      care: '/impact/care', policy: '/impact/policy', stories: '/impact/stories',
+      'advocacy-day': '/our-work/advocacy/advocacy-day'
+    };
+    var PARENTS = {
+      'what-is-fim': 'about', institute: 'about', team: 'about', councils: 'about', funders: 'about',
+      evidence: 'our-work', advocacy: 'our-work', innovation: 'our-work', practice: 'our-work', 'business-case': 'our-work', convening: 'our-work', 'resource-navigator': 'our-work',
+      care: 'impact', policy: 'impact', stories: 'impact',
+      'advocacy-day': 'our-work'
+    };
+
+    function closeDropdowns() {
+      document.querySelectorAll('.dropdown').forEach(function (dd) { dd.hidden = true; });
+    }
+
+    function showPage(name, opts) {
+      opts = opts || {};
+      if (!(name in PATHS)) name = 'home';
+
+      document.querySelectorAll('.page').forEach(function (el) {
+        el.hidden = el.dataset.page !== name;
+      });
+      document.querySelectorAll('.nav-label[data-target]').forEach(function (el) {
+        el.classList.toggle('active', el.dataset.target === name || el.dataset.target === PARENTS[name]);
+      });
+      document.querySelector('.url').textContent = 'tuftsfoodismedicine.org' + PATHS[name];
+      closeDropdowns();
+
+      if (!opts.skipHash) {
+        history.pushState(null, '', '#' + name);
+      }
+
+      if (opts.anchor) {
+        var target = document.getElementById(opts.anchor);
+        if (target) {
+          requestAnimationFrame(function () {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          });
+          return;
+        }
+      }
+      if (!opts.skipScroll) {
+        document.querySelector('.frame').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    document.addEventListener('click', function (e) {
+      var link = e.target.closest('[data-target]');
+      if (link) {
+        e.preventDefault();
+        showPage(link.dataset.target, { anchor: link.dataset.anchor });
+        return;
+      }
+      var toggle = e.target.closest('.caret-btn');
+      if (toggle) {
+        e.stopPropagation();
+        var id = toggle.dataset.toggle;
+        document.querySelectorAll('.dropdown').forEach(function (dd) {
+          dd.hidden = dd.id === id ? !dd.hidden : true;
+        });
+        return;
+      }
+      var tab = e.target.closest('.tab-btn');
+      if (tab) {
+        var tabGroup = tab.closest('.tabs');
+        tabGroup.querySelectorAll('.tab-btn').forEach(function (b) {
+          b.classList.toggle('active', b === tab);
+        });
+        var panelId = tab.dataset.tab;
+        tabGroup.parentElement.querySelectorAll('.tab-panel').forEach(function (p) {
+          p.hidden = p.id !== panelId;
+        });
+        return;
+      }
+      if (!e.target.closest('.nav-wrap')) {
+        closeDropdowns();
+      }
+    });
+
+    var hoverCloseTimer = null;
+    document.querySelectorAll('.nav-item').forEach(function (item) {
+      var id = item.querySelector('.caret-btn').dataset.toggle;
+      var dd = document.getElementById(id);
+
+      function openOnHover() {
+        clearTimeout(hoverCloseTimer);
+        document.querySelectorAll('.dropdown').forEach(function (other) {
+          other.hidden = other.id !== id;
+        });
+      }
+      function scheduleClose() {
+        clearTimeout(hoverCloseTimer);
+        hoverCloseTimer = setTimeout(closeDropdowns, 150);
+      }
+
+      item.addEventListener('mouseenter', openOnHover);
+      item.addEventListener('mouseleave', scheduleClose);
+      dd.addEventListener('mouseenter', function () { clearTimeout(hoverCloseTimer); });
+      dd.addEventListener('mouseleave', scheduleClose);
+    });
+
+    window.addEventListener('popstate', function () {
+      showPage(location.hash.replace('#', ''), { skipHash: true, skipScroll: true });
+    });
+
+    showPage(location.hash.replace('#', '') || 'home', { skipHash: true, skipScroll: true });
+  })();
+</script>
+
+</body></html>
